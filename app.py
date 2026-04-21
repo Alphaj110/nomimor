@@ -257,7 +257,7 @@ def inject_base_css() -> None:
                 border-left: 8px solid var(--pink-main);
                 font-size: 1.1rem;
                 color: var(--question-text);
-                animation: softFadeUp 0.45s ease-out;
+                animation: softFadeUp 0.65s ease-out;
                 transition: transform 0.22s ease, box-shadow 0.22s ease;
             }
 
@@ -273,7 +273,7 @@ def inject_base_css() -> None:
                 font-weight: 700;
                 color: #fff;
                 margin-left: 0.4rem;
-                animation: popIn 0.25s ease-out;
+                animation: popIn 0.4s ease-out;
             }
 
             .role-pour {
@@ -307,27 +307,27 @@ def inject_base_css() -> None:
                 color: #fff;
                 font-weight: 700;
                 padding: 0.55rem 1.1rem;
-                transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-                box-shadow: 0 5px 16px var(--card-shadow);
+                transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+                box-shadow: 0 6px 18px var(--card-shadow);
             }
 
             .stButton > button:hover {
-                transform: translateY(-1px) scale(1.02);
-                box-shadow: 0 8px 20px var(--card-shadow);
-                filter: saturate(1.08);
+                transform: translateY(-3px) scale(1.04);
+                box-shadow: 0 12px 28px var(--card-shadow);
+                filter: saturate(1.12) brightness(1.05);
             }
 
             .stButton > button:active {
-                transform: translateY(0) scale(0.985);
+                transform: translateY(-1px) scale(0.98);
             }
 
             .home-hero {
                 border-radius: 16px;
                 padding: 1rem 1.1rem;
-                margin-bottom: 1rem;
+                margin-bottom: 1.5rem;
                 background: linear-gradient(135deg, var(--pink-light), var(--white));
                 border: 1px solid var(--card-border);
-                animation: softFadeUp 0.5s ease-out;
+                animation: softFadeUp 0.65s ease-out;
             }
 
             .home-card {
@@ -337,13 +337,14 @@ def inject_base_css() -> None:
                 background: linear-gradient(180deg, var(--white), var(--pink-light));
                 box-shadow: 0 8px 20px var(--card-shadow);
                 height: 100%;
-                animation: softFadeUp 0.55s ease-out;
+                animation: softFadeUp 0.75s ease-out;
                 transition: transform 0.24s ease, box-shadow 0.24s ease;
+                margin-bottom: 1.8rem;
             }
 
             .home-card:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 12px 24px var(--card-shadow);
+                transform: translateY(-4px);
+                box-shadow: 0 14px 28px var(--card-shadow);
             }
 
             .theme-chip {
@@ -354,7 +355,7 @@ def inject_base_css() -> None:
                 color: var(--text-dark);
                 font-size: 0.85rem;
                 font-weight: 700;
-                animation: popIn 0.35s ease-out;
+                animation: popIn 0.5s ease-out;
                 transition: transform 0.2s ease;
             }
 
@@ -376,7 +377,7 @@ def inject_base_css() -> None:
                 font-size: 0.84rem;
                 line-height: 1.45;
                 color: var(--small-note);
-                animation: footerSlideIn 0.45s ease-out;
+                animation: footerSlideIn 0.65s ease-out;
                 transition: background 0.25s ease;
             }
 
@@ -451,22 +452,22 @@ def inject_base_css() -> None:
             }
 
             @keyframes softFadeUp {
-                from { opacity: 0; transform: translateY(10px); }
+                from { opacity: 0; transform: translateY(22px); }
                 to { opacity: 1; transform: translateY(0); }
             }
 
             @keyframes footerSlideIn {
-                from { opacity: 0; transform: translateY(12px); }
+                from { opacity: 0; transform: translateY(18px); }
                 to { opacity: 1; transform: translateY(0); }
             }
 
             @keyframes floatIn {
-                from { opacity: 0; transform: translateY(8px); }
+                from { opacity: 0; transform: translateY(12px); }
                 to { opacity: 1; transform: translateY(0); }
             }
 
             @keyframes popIn {
-                from { opacity: 0; transform: scale(0.92); }
+                from { opacity: 0; transform: scale(0.82); }
                 to { opacity: 1; transform: scale(1); }
             }
         </style>
@@ -785,6 +786,7 @@ def render_home_mode() -> None:
             """,
             unsafe_allow_html=True,
         )
+        st.markdown("<div style='margin-top: 1.2rem;'></div>", unsafe_allow_html=True)
         if st.button("Aller au mode Débat", use_container_width=True):
             st.session_state.current_page = "Débat"
             st.rerun()
@@ -802,6 +804,7 @@ def render_home_mode() -> None:
             """,
             unsafe_allow_html=True,
         )
+        st.markdown("<div style='margin-top: 1.2rem;'></div>", unsafe_allow_html=True)
         if st.button("Aller au mode Jeu", use_container_width=True):
             st.session_state.current_page = "Jeu"
             st.rerun()
