@@ -1,6 +1,7 @@
 import json
 import random
 import re
+import base64
 from datetime import datetime, timedelta
 from pathlib import Path
 import streamlit as st
@@ -11,6 +12,7 @@ import streamlit as st
 # -----------------------------
 
 QUESTIONS_FILE = Path(__file__).with_name("questions.json")
+LOGO_FILE = Path(__file__).with_name("logo.png")
 
 
 def load_questions_data() -> dict:
@@ -183,6 +185,22 @@ def normalize_initials(value: str, fallback: str) -> str:
     return (cleaned[:4] or fallback)
 
 
+def render_animated_logo() -> None:
+    if not LOGO_FILE.exists():
+        st.warning("Logo introuvable: logo.png")
+        return
+
+    encoded_logo = base64.b64encode(LOGO_FILE.read_bytes()).decode("utf-8")
+    st.markdown(
+        f"""
+        <div class='logo-heartbeat-wrap'>
+            <img src='data:image/png;base64,{encoded_logo}' class='logo-heartbeat' alt='Logo No Mimor'>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 # -----------------------------
 # Styles
 # -----------------------------
@@ -346,6 +364,20 @@ def inject_base_css() -> None:
                 box-shadow: 0 14px 28px var(--card-shadow);
             }
 
+            .logo-heartbeat-wrap {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 0.5rem;
+            }
+
+            .logo-heartbeat {
+                width: 100%;
+                max-width: 300px;
+                animation: logoHeartbeat 1.8s ease-in-out infinite;
+                transform-origin: center;
+                will-change: transform;
+            }
+
             .theme-chip {
                 display: inline-block;
                 padding: 0.2rem 0.65rem;
@@ -416,6 +448,10 @@ def inject_base_css() -> None:
                     margin-bottom: 0.7rem;
                 }
 
+                .logo-heartbeat {
+                    max-width: 240px;
+                }
+
                 .theme-chip {
                     font-size: 0.78rem;
                 }
@@ -438,7 +474,8 @@ def inject_base_css() -> None:
                 .home-hero,
                 .home-card,
                 .theme-chip,
-                .app-footer {
+                .app-footer,
+                .logo-heartbeat {
                     animation: none !important;
                     transition: none !important;
                 }
@@ -468,6 +505,14 @@ def inject_base_css() -> None:
             @keyframes popIn {
                 from { opacity: 0; transform: scale(0.82); }
                 to { opacity: 1; transform: scale(1); }
+            }
+
+            @keyframes logoHeartbeat {
+                0% { transform: scale(1); }
+                20% { transform: scale(1.03); }
+                40% { transform: scale(1.06); }
+                60% { transform: scale(1.03); }
+                100% { transform: scale(1); }
             }
         </style>
         """,
@@ -755,7 +800,7 @@ def render_jeu_mode() -> None:
 def render_home_mode() -> None:
     _, logo_col, _ = st.columns([2, 1.25, 2])
     with logo_col:
-        st.image("logo.png", use_container_width=True)
+        render_animated_logo()
 
     st.header("Bienvenue sur No Mimor ")
     st.markdown(
