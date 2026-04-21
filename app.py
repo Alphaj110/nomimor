@@ -536,9 +536,9 @@ def init_session_state() -> None:
     if "game_reveal_answer" not in st.session_state:
         st.session_state.game_reveal_answer = False
     if "player1_initials" not in st.session_state:
-        st.session_state.player1_initials = "JO"
+        st.session_state.player1_initials = "J"
     if "player2_initials" not in st.session_state:
-        st.session_state.player2_initials = "SY"
+        st.session_state.player2_initials = "S"
 
 
 # -----------------------------
