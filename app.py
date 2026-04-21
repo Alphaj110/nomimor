@@ -842,10 +842,10 @@ def main() -> None:
     st.sidebar.markdown("### Joueurs")
     
     def normalize_player1():
-        st.session_state.player1_initials = normalize_initials(st.session_state.player1_initials, "JO")
+        st.session_state.player1_initials = normalize_initials(st.session_state.player1_initials, "J")
     
     def normalize_player2():
-        st.session_state.player2_initials = normalize_initials(st.session_state.player2_initials, "SY")
+        st.session_state.player2_initials = normalize_initials(st.session_state.player2_initials, "S")
     
     st.sidebar.text_input("Initiales joueur 1", key="player1_initials", max_chars=4, on_change=normalize_player1)
     st.sidebar.text_input("Initiales joueur 2", key="player2_initials", max_chars=4, on_change=normalize_player2)
