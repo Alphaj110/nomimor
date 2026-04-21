@@ -3,7 +3,6 @@ import random
 import re
 from datetime import datetime, timedelta
 from pathlib import Path
-
 import streamlit as st
 
 
@@ -798,7 +797,7 @@ def render_home_mode() -> None:
                 <p>
                     Choisis une catégorie de cartes selon l'ambiance : <strong>Actions et vérités</strong>, <strong>Tu préfères</strong> ou <strong>Devinettes</strong>.
                     Clique sur <strong>Nouvelle carte</strong> pour piocher un nouveau défi/question, sans répéter la carte précédente.
-                    En mode devinette, tu peux afficher ou masquer la réponse pour laisser les joueurs réfléchir avant la révélation.
+                    En mode devinette, tu as le pouvoir d'afficher ou masquer la réponse pour laisser les joueurs réfléchir avant la révélation.
                 </p>
             </div>
             """,
