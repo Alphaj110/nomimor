@@ -135,6 +135,12 @@ def is_intense_game_card(category: str, card_text: str) -> bool:
         r"\btaille\s+grosse\b",
         r"\btwerk\w*\b",
         r"\benvoy\w*\s+en\s+l'air\b",
+        r"\bse\s'envoy\w*\s+en\s+l'air\b",
+        r"film\s+pour\s+adultes\b",
+        r"porn\b",
+        r"position\s+pr\w+\b",
+        r"sex\w*\b",
+        r"lit\b",
     )
 
     return any(re.search(pattern, text) for pattern in intense_patterns)
@@ -161,6 +167,11 @@ def load_theme_presets() -> dict[str, dict[str, str]]:
             "role_contre_b": "#9d6dff",
             "card_border": "rgba(255, 105, 180, 0.28)",
             "card_shadow": "rgba(255, 105, 180, 0.14)",
+            "card_surface": "rgba(255, 255, 255, 0.88)",
+            "question_surface": "linear-gradient(135deg, #fff, var(--pink-light))",
+            "hero_surface": "linear-gradient(135deg, var(--pink-light), var(--white))",
+            "home_surface": "linear-gradient(180deg, var(--white), var(--pink-light))",
+            "footer_surface": "rgba(255, 255, 255, 0.9)",
             "question_text": "#7a2a67",
             "small_note": "#8a5d8f",
             "sidebar_text": "#6e2b71",
@@ -184,6 +195,11 @@ def load_theme_presets() -> dict[str, dict[str, str]]:
             "role_contre_b": "#5CC6B5",
             "card_border": "rgba(42, 139, 242, 0.22)",
             "card_shadow": "rgba(42, 139, 242, 0.12)",
+            "card_surface": "rgba(255, 255, 255, 0.88)",
+            "question_surface": "linear-gradient(135deg, #fff, var(--pink-light))",
+            "hero_surface": "linear-gradient(135deg, var(--pink-light), var(--white))",
+            "home_surface": "linear-gradient(180deg, var(--white), var(--pink-light))",
+            "footer_surface": "rgba(255, 255, 255, 0.9)",
             "question_text": "#1f4f78",
             "small_note": "#4f708f",
             "sidebar_text": "#1e4c72",
@@ -207,8 +223,13 @@ def load_theme_presets() -> dict[str, dict[str, str]]:
             "role_contre_b": "#5F87FF",
             "card_border": "rgba(255, 79, 176, 0.28)",
             "card_shadow": "rgba(124, 77, 255, 0.22)",
+            "card_surface": "rgba(28, 22, 39, 0.94)",
+            "question_surface": "linear-gradient(135deg, rgba(42, 30, 60, 0.96), rgba(66, 39, 92, 0.96))",
+            "hero_surface": "linear-gradient(135deg, rgba(42, 30, 60, 0.96), rgba(66, 39, 92, 0.96))",
+            "home_surface": "linear-gradient(180deg, rgba(28, 22, 39, 0.96), rgba(43, 28, 60, 0.96))",
+            "footer_surface": "rgba(25, 18, 34, 0.94)",
             "question_text": "#f5ddff",
-            "small_note": "#d6c2eb",
+            "small_note": "#eadcff",
             "sidebar_text": "#f0ddff",
         },
         "Sunset": {
@@ -230,6 +251,11 @@ def load_theme_presets() -> dict[str, dict[str, str]]:
             "role_contre_b": "#FFCA62",
             "card_border": "rgba(255, 122, 89, 0.24)",
             "card_shadow": "rgba(255, 122, 89, 0.14)",
+            "card_surface": "rgba(255, 255, 255, 0.88)",
+            "question_surface": "linear-gradient(135deg, #fff, var(--pink-light))",
+            "hero_surface": "linear-gradient(135deg, var(--pink-light), var(--white))",
+            "home_surface": "linear-gradient(180deg, var(--white), var(--pink-light))",
+            "footer_surface": "rgba(255, 255, 255, 0.9)",
             "question_text": "#724230",
             "small_note": "#8b5d4b",
             "sidebar_text": "#6f3f2d",
@@ -253,6 +279,11 @@ def load_theme_presets() -> dict[str, dict[str, str]]:
             "role_contre_b": "#68B9CB",
             "card_border": "rgba(45, 190, 157, 0.22)",
             "card_shadow": "rgba(45, 190, 157, 0.12)",
+            "card_surface": "rgba(255, 255, 255, 0.88)",
+            "question_surface": "linear-gradient(135deg, #fff, var(--pink-light))",
+            "hero_surface": "linear-gradient(135deg, var(--pink-light), var(--white))",
+            "home_surface": "linear-gradient(180deg, var(--white), var(--pink-light))",
+            "footer_surface": "rgba(255, 255, 255, 0.9)",
             "question_text": "#25665a",
             "small_note": "#4d7e74",
             "sidebar_text": "#215f54",
@@ -364,7 +395,7 @@ def inject_base_css() -> None:
             }
 
             .main-card {
-                background: rgba(255, 255, 255, 0.88);
+                background: var(--card-surface);
                 border: 1px solid var(--card-border);
                 border-radius: 18px;
                 padding: 1.2rem 1rem;
@@ -380,7 +411,7 @@ def inject_base_css() -> None:
 
             .question-box {
                 border-radius: 16px;
-                background: linear-gradient(135deg, #fff, var(--pink-light));
+                background: var(--question-surface);
                 padding: 1rem;
                 border-left: 8px solid var(--pink-main);
                 font-size: 1.1rem;
@@ -453,7 +484,7 @@ def inject_base_css() -> None:
                 border-radius: 16px;
                 padding: 1rem 1.1rem;
                 margin-bottom: 1.5rem;
-                background: linear-gradient(135deg, var(--pink-light), var(--white));
+                background: var(--hero-surface);
                 border: 1px solid var(--card-border);
                 animation: softFadeUp 0.65s ease-out;
             }
@@ -462,7 +493,7 @@ def inject_base_css() -> None:
                 border-radius: 16px;
                 padding: 1rem;
                 border: 1px solid var(--card-border);
-                background: linear-gradient(180deg, var(--white), var(--pink-light));
+                background: var(--home-surface);
                 box-shadow: 0 8px 20px var(--card-shadow);
                 height: 100%;
                 animation: softFadeUp 0.75s ease-out;
@@ -513,7 +544,7 @@ def inject_base_css() -> None:
                 z-index: 999;
                 padding: 0.55rem 0.8rem;
                 border-top: 1px solid var(--card-border);
-                background: rgba(255, 255, 255, 0.9);
+                background: var(--footer-surface);
                 backdrop-filter: blur(6px);
                 text-align: center;
                 font-size: 0.84rem;
@@ -654,6 +685,11 @@ def apply_theme_variables(theme: dict[str, str]) -> None:
                 --role-contre-b: {theme['role_contre_b']};
                 --card-border: {theme['card_border']};
                 --card-shadow: {theme['card_shadow']};
+                --card-surface: {theme['card_surface']};
+                --question-surface: {theme['question_surface']};
+                --hero-surface: {theme['hero_surface']};
+                --home-surface: {theme['home_surface']};
+                --footer-surface: {theme['footer_surface']};
                 --question-text: {theme['question_text']};
                 --small-note: {theme['small_note']};
                 --sidebar-text: {theme['sidebar_text']};
