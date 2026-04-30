@@ -132,7 +132,9 @@
       "Utilise tes pires phrases d’accroche sur moi pendant une minute.",
       "Laisse-moi te dessiner un tatouage au marqueur permanent.",
       "Embrasse la partie que tu préfères de mon corps.",
-      "Fais-moi un massage pendant 30 secondes."
+      "Fais-moi un massage pendant 30 secondes.",
+      "Fais un compliment coquin à la personne de ton choix en 10 secondes.",
+      "Chuchote une phrase sensuelle à l'oreille d'un joueur."
 
     ],
     "Tu préfères": [
@@ -173,7 +175,9 @@
       "Tu préfères recevoir un long message d'amour ou un vocal très sensuel ?",
       "Tu préfères un partenaire très tendre en public ou très tendre en privé ?",
       "Tu préfères un premier rendez-vous sur la plage de nuit ou sous la pluie ?",
-      "Tu préfères avouer ton plus gros crush ou ton plus gros râteau ?"
+      "Tu préfères avouer ton plus gros crush ou ton plus gros râteau ?",
+      "Tu préfères un date très flirt ou un mot doux qui fait fondre ?",
+      "Tu préfères un baiser volé ou un regard qui dit tout ?"
     ],
     "Devinettes": [
       "Je suis plein de trous mais je peux contenir de l'eau. Qui suis-je ? (Une éponge)",
@@ -208,7 +212,9 @@
       "Je peux être brûlant, timide ou passionné, et je commence souvent par un regard. Qui suis-je ? (Le flirt)",
       "Plus on me retarde, plus j'augmente la tension. Qui suis-je ? (Le suspense romantique)",
       "Je fais rougir, je fais sourire, et je commence souvent par un compliment. Qui suis-je ? (La séduction)",
-      "On me dit parfois à l'oreille et je donne des frissons. Qui suis-je ? (Un mot doux)"
+      "On me dit parfois à l'oreille et je donne des frissons. Qui suis-je ? (Un mot doux)",
+      "Je peux être volé, tendre ou passionné, et je change une soirée. Qui suis-je ? (Un baiser)",
+      "Je commence quand deux regards se croisent et j'augmente la tension sans toucher personne. Qui suis-je ? (Le flirt)"
     ],
     "Vérités": [
       "Raconte une expérience embarrassante que tu as vécue.",
@@ -313,103 +319,5 @@
       "Si tu n'avais plus jamais à travailler, comment passerais-tu ton temps ?",
       "Quelle est ta plus grande peur concernant notre relation ?"
     ]
-  },
-  "game_modes": {
-    "Basique": {
-      "Actions": [
-        "Fais une imitation d'une star pendant 20 secondes.",
-        "Parle avec une voix de dessin animé pendant 1 minute.",
-        "Fais 10 pas de danse sans t'arrêter.",
-        "Mime un métier et laisse les autres deviner.",
-        "Fais un compliment créatif à chaque joueur.",
-        "Chante au lieu de parler jusqu'à ton prochain tour.",
-        "Fais 10 squats.",
-        "Fais 10 pompes.",
-        "Donne un concert d'air guitare.",
-        "Fais une grimace et tiens-la pendant 30 secondes."
-      ],
-      "Vérités": [
-        "Raconte une expérience embarrassante que tu as vécue.",
-        "Quel est ton plus grand secret ?",
-        "As-tu déjà menti pour éviter une punition ?",
-        "Quelle est la chose la plus bizarre que tu aies mangée ?",
-        "Quel est le pire cadeau que tu aies jamais reçu ?",
-        "Quelle est ta plus grande peur irrationnelle ?",
-        "Quel est ton dernier mensonge ?",
-        "Quel est ton film préféré que tu n'assumes pas publiquement ?",
-        "Quel est ton plus gros regret vestimentaire ?",
-        "Quelle est la chose la plus gênante que tu aies faite en public ?"
-      ],
-      "Tu préfères": [
-        "Tu préfères vivre sans musique ou sans séries ?",
-        "Tu préfères être invisible ou pouvoir voler ?",
-        "Tu préfères vivre sans téléphone portable ou vivre sans ordinateur ?",
-        "Tu préfères perdre tous tes contacts téléphoniques ou perdre toutes tes photos ?",
-        "Tu préfères savoir quand tu vas mourir ou comment tu vas mourir ?",
-        "Tu préfères être riche mais malheureux ou pauvre mais heureux ?",
-        "Tu préfères parler toutes les langues humaines ou parler à tous les animaux ?",
-        "Tu préfères ne plus jamais avoir de goût ou ne plus jamais avoir d'odorat ?",
-        "Tu préfères remonter le temps ou aller dans le futur voir ta vie ?",
-        "Tu préfères être un génie dans un monde d'idiots ou un idiot dans un monde de génies ?"
-      ],
-      "Devinettes": [
-        "Je suis plein de trous mais je peux contenir de l'eau. Qui suis-je ? (Une éponge)",
-        "Qu'est-ce qui monte mais ne redescend jamais ? (L'âge)",
-        "Qu'est-ce qui peut faire le tour du monde en restant dans un coin ? (Un timbre)",
-        "Je parle toutes les langues sans en avoir appris aucune. Qui suis-je ? (L'écho)",
-        "Qu'est-ce qui a des dents mais ne mange pas ? (Un peigne)",
-        "Qu'est-ce qui a des aiguilles mais ne coud pas ? (Une horloge)",
-        "Mes villes sont vides, mes montagnes sont plates, mes fleuves sont secs. Qui suis-je ? (Une carte)",
-        "Qu'est-ce qui grossit mais ne prend jamais de poids ? (Une loupe)"
-      ]
-    },
-    "Intense": {
-      "Actions": [
-        "Fais un regard de séduction à chaque joueur pendant 20 secondes.",
-        "Envoie un compliment coquin mais classe à la personne de ton choix.",
-        "Chuchote une phrase romantique improvisée à ton voisin de droite.",
-        "Fais une mini danse sensuelle de 10 secondes.",
-        "Décris ton rendez-vous idéal en 3 phrases ultra charmantes.",
-        "Imite une scène de film romantique pendant 20 secondes.",
-        "Fais un compliment sincère et un peu provocateur à quelqu'un.",
-        "Approche-toi de la personne de ton choix et dis-lui un mot doux.",
-        "Fais semblant d'écrire un message très flirt pendant 15 secondes.",
-        "Regarde quelqu'un dans les yeux sans rire pendant 20 secondes."
-      ],
-      "Vérités": [
-        "As-tu déjà eu le béguin pour quelqu'un dans cette pièce ?",
-        "Quel est ton plus gros turn-on ?",
-        "As-tu déjà embrassé quelqu'un dans ce groupe ? Qui ?",
-        "Quel est ton fantasme que tu n'assumes pas complètement ?",
-        "As-tu déjà eu un crush sur quelqu'un de ton entourage ?",
-        "Quelle est la chose la plus folle que tu aies faite pour attirer quelqu'un ?",
-        "As-tu déjà voulu envoyer un message très coquin ?",
-        "Quel est le message le plus gênant que tu aies déjà envoyé à ton crush ?",
-        "As-tu déjà regretté d'avoir flirté avec la mauvaise personne ?",
-        "Quelle est la personne ici que tu trouves la plus attirante ?"
-      ],
-      "Tu préfères": [
-        "Tu préfères un date surprise ultra romantique ou une soirée spontanée très coquine ?",
-        "Tu préfères recevoir un long message d'amour ou un vocal très sensuel ?",
-        "Tu préfères un partenaire très tendre en public ou très tendre en privé ?",
-        "Tu préfères un premier rendez-vous sur la plage de nuit ou sous la pluie ?",
-        "Tu préfères avouer ton plus gros crush ou ton plus gros râteau ?",
-        "Tu préfères un baiser inoubliable ou un regard qui dit tout ?",
-        "Tu préfères un flirt discret ou assumé devant tout le monde ?",
-        "Tu préfères être irrésistible mais inaccessible ou très proche mais imprévisible ?",
-        "Tu préfères une soirée ultra romantique ou une soirée pleine de tension ?",
-        "Tu préfères qu'on te fasse un compliment osé ou un mot doux à l'oreille ?"
-      ],
-      "Devinettes": [
-        "Je monte vite quand tu me regardes, et je redescends quand tu pars. Qui suis-je ? (Le rythme du coeur)",
-        "On me donne parfois sur la joue, parfois sur la bouche, et je peux tout changer. Qui suis-je ? (Un baiser)",
-        "Je peux être brûlant, timide ou passionné, et je commence souvent par un regard. Qui suis-je ? (Le flirt)",
-        "Plus on me retarde, plus j'augmente la tension. Qui suis-je ? (Le suspense romantique)",
-        "Je fais rougir, je fais sourire, et je commence souvent par un compliment. Qui suis-je ? (La séduction)",
-        "On me dit parfois à l'oreille et je donne des frissons. Qui suis-je ? (Un mot doux)",
-        "Plus je suis partagé, plus je rapproche les gens. Qui suis-je ? (Un secret bien gardé)",
-        "Je peux être tendre, discret ou électrique, et j'arrive souvent avant le premier mot. Qui suis-je ? (Un regard)"
-      ]
-    }
   }
 }
