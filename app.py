@@ -30,8 +30,23 @@ def load_game_content() -> dict[str, list[str]]:
 
 
 def load_game_modes() -> dict[str, dict[str, list[str]]]:
-    data = load_questions_data()
-    return data.get("game_modes", {})
+    game_content = load_game_content()
+    game_modes: dict[str, dict[str, list[str]]] = {"Basique": {}, "Intense": {}}
+
+    for category, cards in game_content.items():
+        basic_cards: list[str] = []
+        intense_cards: list[str] = []
+
+        for card in cards:
+            if is_intense_game_card(category, card):
+                intense_cards.append(card)
+            else:
+                basic_cards.append(card)
+
+        game_modes["Basique"][category] = basic_cards
+        game_modes["Intense"][category] = intense_cards
+
+    return game_modes
 
 
 def get_game_mode_content(mode_name: str) -> dict[str, list[str]]:
@@ -39,6 +54,66 @@ def get_game_mode_content(mode_name: str) -> dict[str, list[str]]:
     if mode_name in game_modes:
         return game_modes[mode_name]
     return load_game_content()
+
+
+def is_intense_game_card(category: str, card_text: str) -> bool:
+    text = f"{category} {card_text}".lower()
+
+    intense_markers = (
+        "séduction",
+        "seduction",
+        "coquin",
+        "coquine",
+        "sensuel",
+        "sensuelle",
+        "romant",
+        "flirt",
+        "crush",
+        "béguin",
+        "beguin",
+        "partenaire",
+        "jaloux",
+        "jalouse",
+        "tromp",
+        "couch",
+        "sexting",
+        "orgas",
+        "kink",
+        "fantasme",
+        "body count",
+        "turn-on",
+        "turn on",
+        "baiser",
+        "embrass",
+        "massage",
+        "date",
+        "râteau",
+        "rateau",
+        "au lit",
+        "plan cul",
+        "attirant",
+        "attirante",
+        "provocateur",
+        "provocatrice",
+        "message très coquin",
+        "mot doux",
+        "suspense romantique",
+        "regard de séduction",
+        "rendez-vous",
+        "tendre en privé",
+        "tendre en public",
+        "plage de nuit",
+        "sous la pluie",
+        "tenues",
+        "tatouage",
+        "compliment osé",
+        "compliment hot",
+        "secret bien gardé",
+        "regard qui dit tout",
+        "proxim",
+    )
+
+    return any(marker in text for marker in intense_markers)
 
 
 def load_theme_presets() -> dict[str, dict[str, str]]:
