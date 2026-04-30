@@ -2,6 +2,7 @@ import json
 import random
 import re
 import base64
+import unicodedata
 from datetime import datetime, timedelta
 from pathlib import Path
 import streamlit as st
@@ -49,6 +50,11 @@ def load_game_modes() -> dict[str, dict[str, list[str]]]:
     return game_modes
 
 
+def normalize_text_for_regex(text: str) -> str:
+    normalized = unicodedata.normalize("NFKD", text)
+    return "".join(char for char in normalized if not unicodedata.combining(char)).lower()
+
+
 def get_game_mode_content(mode_name: str) -> dict[str, list[str]]:
     game_modes = load_game_modes()
     if mode_name in game_modes:
@@ -56,66 +62,82 @@ def get_game_mode_content(mode_name: str) -> dict[str, list[str]]:
     return load_game_content()
 
 
-def is_intense_game_card(category: str, card_text: str) -> bool:
-    text = f"{category} {card_text}".lower()
+def resolve_game_intensity_choice(choice: str, category: str) -> str:
+    if choice != "Aléatoire":
+        return choice
 
-    intense_markers = (
-        "séduction",
-        "seduction",
-        "coquin",
-        "coquine",
-        "sensuel",
-        "sensuelle",
-        "romant",
-        "flirt",
-        "crush",
-        "béguin",
-        "beguin",
-        "partenaire",
-        "jaloux",
-        "jalouse",
-        "tromp",
-        "couch",
-        "sexting",
-        "orgas",
-        "kink",
-        "fantasme",
-        "body count",
-        "turn-on",
-        "turn on",
-        "baiser",
-        "embrass",
-        "massage",
-        "date",
-        "râteau",
-        "rateau",
-        "au lit",
-        "plan cul",
-        "attirant",
-        "attirante",
-        "provocateur",
-        "provocatrice",
-        "message très coquin",
-        "mot doux",
-        "suspense romantique",
-        "regard de séduction",
-        "rendez-vous",
-        "tendre en privé",
-        "tendre en public",
-        "plage de nuit",
-        "tenues",
-        "tatouage",
-        "compliment osé",
-        "compliment hot",
-        "secret bien gardé",
-        "regard qui dit tout",
-        "proxim",
-        "tenue",
-        "sous-vêtements",
-        
+    if category == "Action et Vérités":
+        available_modes = [
+            mode_name
+            for mode_name in ("Etincelle", "Flamme")
+            if get_game_mode_content(mode_name).get("Actions")
+            or get_game_mode_content(mode_name).get("Vérités")
+            or get_game_mode_content(mode_name).get("Verites")
+        ]
+    else:
+        available_modes = [
+            mode_name
+            for mode_name in ("Etincelle", "Flamme")
+            if get_game_mode_content(mode_name).get(category)
+        ]
+
+    if available_modes:
+        return random.choice(available_modes)
+    return random.choice(["Etincelle", "Flamme"])
+
+
+def is_intense_game_card(category: str, card_text: str) -> bool:
+    text = normalize_text_for_regex(f"{category} {card_text}")
+
+    intense_patterns = (
+        r"\bseduct\w*\b",
+        r"\bcoquin\w*\b",
+        r"\bsensuel\w*\b",
+        r"\bromant\w*\b",
+        r"\bflirt\w*\b",
+        r"\bcrush\w*\b",
+        r"\bbeguin\w*\b",
+        r"\bpartenaire\w*\b",
+        r"\bjalou\w*\b",
+        r"\btromp\w*\b",
+        r"\bcouch\w*\b",
+        r"\bsexting\w*\b",
+        r"\borgas\w*\b",
+        r"\bkink\w*\b",
+        r"\bfantasm\w*\b",
+        r"\bbody\s+count\b",
+        r"\bturn[- ]on\b",
+        r"\bbais\w*\b",
+        r"\bembrass\w*\b",
+        r"\bmassag\w*\b",
+        r"\bdate\b",
+        r"\brateau\b",
+        r"\bau\s+lit\b",
+        r"\bplan\s+cul\b",
+        r"\battir\w*\b",
+        r"\bprovocateur\w*\b",
+        r"\bmessage\s+tre?s\s+coquin\w*\b",
+        r"\bmot\s+doux\b",
+        r"\bsuspense\s+romant\w*\b",
+        r"\bregard\s+de\s+seduct\w*\b",
+        r"\brendez[- ]vous\b",
+        r"\btendre\s+en\s+priv\w*\b",
+        r"\btendre\s+en\s+public\b",
+        r"\bplage\s+de\s+nuit\b",
+        r"\btenu\w*\b",
+        r"\btatouag\w*\b",
+        r"\bcompliment\s+ose\w*\b",
+        r"\bcompliment\s+hot\b",
+        r"\bsecret\s+bien\s+gard\w*\b",
+        r"\bregard\s+qui\s+dit\s+tout\b",
+        r"\bproxim\w*\b",
+        r"\bsous[- ]vetement\w*\b",
+        r"\btaille\s+grosse\b",
+        r"\btwerk\w*\b",
+        r"\benvoy\w*\s+en\s+l'air\b",
     )
 
-    return any(marker in text for marker in intense_markers)
+    return any(re.search(pattern, text) for pattern in intense_patterns)
 
 
 def load_theme_presets() -> dict[str, dict[str, str]]:
@@ -768,7 +790,8 @@ def render_debat_mode() -> None:
 # -----------------------------
 
 def roll_game_content(intensity: str, category: str) -> None:
-    game_data = get_game_mode_content(intensity)
+    resolved_intensity = resolve_game_intensity_choice(intensity, category)
+    game_data = get_game_mode_content(resolved_intensity)
 
     if category == "Action et Vérités":
         actions = game_data.get("Actions", [])
@@ -818,7 +841,7 @@ def roll_game_content(intensity: str, category: str) -> None:
 
 def render_game_choice_buttons() -> None:
     st.subheader("Choisis l'intensité du jeu")
-    tone_col1, tone_col2 = st.columns(2)
+    tone_col1, tone_col2, tone_col3 = st.columns(3)
 
     with tone_col1:
         if st.button("Etincelle", use_container_width=True):
@@ -833,6 +856,16 @@ def render_game_choice_buttons() -> None:
     with tone_col2:
         if st.button("Flamme", use_container_width=True):
             st.session_state.game_intensity_choice = "Flamme"
+            st.session_state.game_mode_choice = None
+            st.session_state.game_pick = {
+                "category": None,
+                "content": "Choisis un type puis clique sur 'Nouvelle carte'.",
+                "answer": None,
+            }
+            st.session_state.game_reveal_answer = False
+    with tone_col3:
+        if st.button("Aléatoire", use_container_width=True):
+            st.session_state.game_intensity_choice = "Aléatoire"
             st.session_state.game_mode_choice = None
             st.session_state.game_pick = {
                 "category": None,
