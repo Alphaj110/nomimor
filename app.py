@@ -29,6 +29,18 @@ def load_game_content() -> dict[str, list[str]]:
     return data.get("game_content", {})
 
 
+def load_game_modes() -> dict[str, dict[str, list[str]]]:
+    data = load_questions_data()
+    return data.get("game_modes", {})
+
+
+def get_game_mode_content(mode_name: str) -> dict[str, list[str]]:
+    game_modes = load_game_modes()
+    if mode_name in game_modes:
+        return game_modes[mode_name]
+    return load_game_content()
+
+
 def load_theme_presets() -> dict[str, dict[str, str]]:
     return {
         "Barbie": {
@@ -373,7 +385,7 @@ def inject_base_css() -> None:
             .logo-heartbeat {
                 width: 100%;
                 max-width: 300px;
-                animation: logoHeartbeat 1.8s ease-in-out infinite;
+                animation: logoHeartbeat 1.25s ease-in-out infinite;
                 transform-origin: center;
                 will-change: transform;
             }
@@ -509,9 +521,9 @@ def inject_base_css() -> None:
 
             @keyframes logoHeartbeat {
                 0% { transform: scale(1); }
-                20% { transform: scale(1.03); }
-                40% { transform: scale(1.06); }
-                60% { transform: scale(1.03); }
+                14% { transform: scale(1.025); }
+                28% { transform: scale(1.05); }
+                42% { transform: scale(1.025); }
                 100% { transform: scale(1); }
             }
         </style>
@@ -570,6 +582,8 @@ def init_session_state() -> None:
         st.session_state.timer_end = None
     if "timer_duration_sec" not in st.session_state:
         st.session_state.timer_duration_sec = 60
+    if "game_intensity_choice" not in st.session_state:
+        st.session_state.game_intensity_choice = "Basique"
     if "game_mode_choice" not in st.session_state:
         st.session_state.game_mode_choice = None
     if "game_pick" not in st.session_state:
@@ -676,8 +690,8 @@ def render_debat_mode() -> None:
 # Game mode
 # -----------------------------
 
-def roll_game_content(category: str) -> None:
-    game_data = load_game_content()
+def roll_game_content(intensity: str, category: str) -> None:
+    game_data = get_game_mode_content(intensity)
 
     if category == "Action et Vérités":
         actions = game_data.get("Actions", [])
@@ -726,6 +740,31 @@ def roll_game_content(category: str) -> None:
 
 
 def render_game_choice_buttons() -> None:
+    st.subheader("Choisis l'intensité du jeu")
+    tone_col1, tone_col2 = st.columns(2)
+
+    with tone_col1:
+        if st.button("Basique", use_container_width=True):
+            st.session_state.game_intensity_choice = "Basique"
+            st.session_state.game_mode_choice = None
+            st.session_state.game_pick = {
+                "category": None,
+                "content": "Choisis un type puis clique sur 'Nouvelle carte'.",
+                "answer": None,
+            }
+            st.session_state.game_reveal_answer = False
+    with tone_col2:
+        if st.button("Intense", use_container_width=True):
+            st.session_state.game_intensity_choice = "Intense"
+            st.session_state.game_mode_choice = None
+            st.session_state.game_pick = {
+                "category": None,
+                "content": "Choisis un type puis clique sur 'Nouvelle carte'.",
+                "answer": None,
+            }
+            st.session_state.game_reveal_answer = False
+
+    st.caption(f"Mode sélectionné : {st.session_state.game_intensity_choice}")
     st.subheader("Choisis le type de jeu")
     col1, col2, col3 = st.columns(3)
 
@@ -763,7 +802,7 @@ def render_game_choice_buttons() -> None:
 def render_jeu_mode() -> None:
     st.markdown("<div class='main-card'>", unsafe_allow_html=True)
     st.header("Mode Jeu")
-    st.markdown("<p class='small-note'>Choisis d'abord un type : Action et Vérités, Tu préfères ou Devinettes.</p>", unsafe_allow_html=True)
+    st.markdown("<p class='small-note'>Choisis d'abord une intensité, puis un type : Action et Vérités, Tu préfères ou Devinettes.</p>", unsafe_allow_html=True)
 
     render_game_choice_buttons()
 
@@ -771,7 +810,7 @@ def render_jeu_mode() -> None:
         st.info("Sélectionne un type de jeu pour commencer.")
     else:
         if st.button("Nouvelle carte", use_container_width=True):
-            roll_game_content(st.session_state.game_mode_choice)
+            roll_game_content(st.session_state.game_intensity_choice, st.session_state.game_mode_choice)
 
     pick = st.session_state.game_pick
 
@@ -782,6 +821,8 @@ def render_jeu_mode() -> None:
     with col_b:
         st.subheader("Contenu")
         st.markdown(f"<div class='question-box'>{pick['content']}</div>", unsafe_allow_html=True)
+
+        st.caption(f"Intensité active : {st.session_state.game_intensity_choice}")
 
         if pick.get("category") == "Devinettes" and pick.get("answer"):
             toggle_label = "Masquer la réponse" if st.session_state.game_reveal_answer else "Réponse"
