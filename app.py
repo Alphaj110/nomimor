@@ -31,7 +31,7 @@ def load_game_content() -> dict[str, list[str]]:
 
 def load_game_modes() -> dict[str, dict[str, list[str]]]:
     game_content = load_game_content()
-    game_modes: dict[str, dict[str, list[str]]] = {"Basique": {}, "Intense": {}}
+    game_modes: dict[str, dict[str, list[str]]] = {"Etincelle": {}, "Flamme": {}}
 
     for category, cards in game_content.items():
         basic_cards: list[str] = []
@@ -43,8 +43,8 @@ def load_game_modes() -> dict[str, dict[str, list[str]]]:
             else:
                 basic_cards.append(card)
 
-        game_modes["Basique"][category] = basic_cards
-        game_modes["Intense"][category] = intense_cards
+        game_modes["Etincelle"][category] = basic_cards
+        game_modes["Flamme"][category] = intense_cards
 
     return game_modes
 
@@ -103,7 +103,6 @@ def is_intense_game_card(category: str, card_text: str) -> bool:
         "tendre en privé",
         "tendre en public",
         "plage de nuit",
-        "sous la pluie",
         "tenues",
         "tatouage",
         "compliment osé",
@@ -111,6 +110,9 @@ def is_intense_game_card(category: str, card_text: str) -> bool:
         "secret bien gardé",
         "regard qui dit tout",
         "proxim",
+        "tenue",
+        "sous-vêtements",
+        
     )
 
     return any(marker in text for marker in intense_markers)
@@ -658,7 +660,7 @@ def init_session_state() -> None:
     if "timer_duration_sec" not in st.session_state:
         st.session_state.timer_duration_sec = 60
     if "game_intensity_choice" not in st.session_state:
-        st.session_state.game_intensity_choice = "Basique"
+        st.session_state.game_intensity_choice = "Etincelle"
     if "game_mode_choice" not in st.session_state:
         st.session_state.game_mode_choice = None
     if "game_pick" not in st.session_state:
@@ -690,7 +692,7 @@ def reset_debate_timer() -> None:
 
 
 def render_timer() -> None:
-    st.subheader("Timer de débat")
+    st.subheader("Timer du Mind date")
     col_a, col_b, col_c = st.columns([1.2, 1, 1])
     with col_a:
         minutes = st.number_input(
@@ -714,7 +716,7 @@ def render_timer() -> None:
     remaining = int((st.session_state.timer_end - datetime.now()).total_seconds())
     total = max(1, st.session_state.timer_duration_sec)
     if remaining <= 0:
-        st.success("Temps écoulé ! Fin du débat")
+        st.success("Temps écoulé ! Fin du Mind date")
         st.session_state.timer_end = None
         st.progress(1.0)
         return
@@ -726,12 +728,12 @@ def render_timer() -> None:
 
 def render_debat_mode() -> None:
     st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-    st.header("Mode Débat")
+    st.header("Mode Mind date")
     st.markdown("<p class='small-note'>Choisis un sujet, prends position et défends tes idées.</p>", unsafe_allow_html=True)
 
     col_left, col_right = st.columns(2)
     with col_left:
-        if st.button("Nouveau débat", use_container_width=True):
+        if st.button("Nouveau Mind date", use_container_width=True):
             questions = load_debate_questions()
             st.session_state.debate_question = get_random_item(questions, st.session_state.debate_question)
     with col_right:
@@ -741,7 +743,7 @@ def render_debat_mode() -> None:
     st.markdown(
         f"""
         <div class='question-box'>
-            <strong>Sujet du débat :</strong><br>
+            <strong>Sujet du Mind date :</strong><br>
             {st.session_state.debate_question}
         </div>
         """,
@@ -819,8 +821,8 @@ def render_game_choice_buttons() -> None:
     tone_col1, tone_col2 = st.columns(2)
 
     with tone_col1:
-        if st.button("Basique", use_container_width=True):
-            st.session_state.game_intensity_choice = "Basique"
+        if st.button("Etincelle", use_container_width=True):
+            st.session_state.game_intensity_choice = "Etincelle"
             st.session_state.game_mode_choice = None
             st.session_state.game_pick = {
                 "category": None,
@@ -829,8 +831,8 @@ def render_game_choice_buttons() -> None:
             }
             st.session_state.game_reveal_answer = False
     with tone_col2:
-        if st.button("Intense", use_container_width=True):
-            st.session_state.game_intensity_choice = "Intense"
+        if st.button("Flamme", use_container_width=True):
+            st.session_state.game_intensity_choice = "Flamme"
             st.session_state.game_mode_choice = None
             st.session_state.game_pick = {
                 "category": None,
@@ -922,7 +924,7 @@ def render_home_mode() -> None:
     st.markdown(
         """
         <div class='home-hero'>
-            <p class='small-note'>No Mimor est une app de soirée en 2 modes : Débat pour argumenter avec un timer, et Jeu pour piocher des cartes fun (Actions, Tu préfères, Devinettes).</p>
+            <p class='small-note'>No Mimor est une app de soirée en 2 modes : Mind date pour argumenter avec un timer, et Jeu pour piocher des cartes fun (Actions, Tu préfères, Devinettes).</p>
             <strong>Comment démarrer :</strong> choisis un mode ci-dessous, puis utilise les boutons pour générer un nouveau contenu à chaque tour.
             <br>
             <strong>Personnalisation :</strong> change le thème dans la barre de gauche pour adapter l'ambiance visuelle à ta partie.
@@ -936,10 +938,10 @@ def render_home_mode() -> None:
         st.markdown(
             """
             <div class='home-card'>
-                <h3><strong>Débat</strong></h3>
+                <h3><strong>Mind date</strong></h3>
                 <p>
-                    Génère un sujet de débat aléatoire, puis attribue automatiquement les rôles <strong>POUR</strong> et <strong>CONTRE</strong> aux joueurs.
-                    Utilise le bouton <strong>Nouveau débat</strong> pour changer de sujet et <strong>Mélanger les rôles</strong> pour relancer la dynamique.
+                    Génère un sujet Mind date aléatoire, puis attribue automatiquement les rôles <strong>POUR</strong> et <strong>CONTRE</strong> aux joueurs.
+                    Utilise le bouton <strong>Nouveau Mind date</strong> pour changer de sujet et <strong>Mélanger les rôles</strong> pour relancer la dynamique.
                     Le timer intégré permet de fixer une durée (1 à 30 min) et de suivre le temps restant en direct.
                 </p>
             </div>
@@ -947,8 +949,8 @@ def render_home_mode() -> None:
             unsafe_allow_html=True,
         )
         st.markdown("<div style='margin-top: 1.2rem;'></div>", unsafe_allow_html=True)
-        if st.button("Aller au mode Débat", use_container_width=True):
-            st.session_state.current_page = "Débat"
+        if st.button("Aller au mode Mind date", use_container_width=True):
+            st.session_state.current_page = "Mind date"
             st.rerun()
     with right:
         st.markdown(
@@ -977,7 +979,7 @@ def render_footer() -> None:
         <div class='app-footer'>
             <strong>© {current_year} No Mimor</strong><span class='dot'>•</span>By Jordan<span class='dot'>•</span>Tous droits réservés
             <br>
-            Débat, Jeux & thèmes personnalisables<span class='dot'>•</span>Version 1.0<span class='dot'>•</span>
+            Mind date, Jeux & thèmes personnalisables<span class='dot'>•</span>Version 1.0<span class='dot'>•</span>
             <a href='mailto:jordanlokimomo@gmail.com?subject=Contact%20No%20Mimor'>Contact</a>
         </div>
         """,
@@ -1027,7 +1029,7 @@ def main() -> None:
 
     if st.session_state.current_page == "Accueil":
         render_home_mode()
-    elif st.session_state.current_page == "Débat":
+    elif st.session_state.current_page == "Mind date":
         render_debat_mode()
     else:
         render_jeu_mode()
