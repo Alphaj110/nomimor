@@ -66,21 +66,7 @@ def resolve_game_intensity_choice(choice: str, category: str) -> str:
     if choice != "Aléatoire":
         return choice
 
-    if category == "Action et Vérités":
-        available_modes = [
-            mode_name
-            for mode_name in ("Etincelle", "Flamme")
-            if get_game_mode_content(mode_name).get("Actions")
-            or get_game_mode_content(mode_name).get("Vérités")
-            or get_game_mode_content(mode_name).get("Verites")
-        ]
-    else:
-        available_modes = [
-            mode_name
-            for mode_name in ("Etincelle", "Flamme")
-            if get_game_mode_content(mode_name).get(category)
-        ]
-
+    available_modes = [mode_name for mode_name in ("Etincelle", "Flamme") if get_game_mode_content(mode_name).get(category)]
     if available_modes:
         return random.choice(available_modes)
     return random.choice(["Etincelle", "Flamme"])
@@ -90,57 +76,19 @@ def is_intense_game_card(category: str, card_text: str) -> bool:
     text = normalize_text_for_regex(f"{category} {card_text}")
 
     intense_patterns = (
-        r"\bseduct\w*\b",
-        r"\bcoquin\w*\b",
-        r"\bsensuel\w*\b",
-        r"\bromant\w*\b",
-        r"\bflirt\w*\b",
-        r"\bcrush\w*\b",
-        r"\bbeguin\w*\b",
-        r"\bpartenaire\w*\b",
-        r"\bjalou\w*\b",
-        r"\btromp\w*\b",
-        r"\bcouch\w*\b",
-        r"\bsexting\w*\b",
-        r"\borgas\w*\b",
-        r"\bkink\w*\b",
-        r"\bfantasm\w*\b",
-        r"\bbody\s+count\b",
-        r"\bturn[- ]on\b",
-        r"\bbais\w*\b",
-        r"\bembrass\w*\b",
-        r"\bmassag\w*\b",
-        r"\bdate\b",
-        r"\brateau\b",
-        r"\bau\s+lit\b",
-        r"\bplan\s+cul\b",
-        r"\battir\w*\b",
-        r"\bprovocateur\w*\b",
-        r"\bmessage\s+tre?s\s+coquin\w*\b",
-        r"\bmot\s+doux\b",
-        r"\bsuspense\s+romant\w*\b",
-        r"\bregard\s+de\s+seduct\w*\b",
-        r"\brendez[- ]vous\b",
-        r"\btendre\s+en\s+priv\w*\b",
-        r"\btendre\s+en\s+public\b",
-        r"\bplage\s+de\s+nuit\b",
-        r"\btenu\w*\b",
-        r"\btatouag\w*\b",
-        r"\bcompliment\s+ose\w*\b",
-        r"\bcompliment\s+hot\b",
-        r"\bsecret\s+bien\s+gard\w*\b",
-        r"\bregard\s+qui\s+dit\s+tout\b",
-        r"\bproxim\w*\b",
-        r"\bsous[- ]vetement\w*\b",
-        r"\btaille\s+grosse\b",
-        r"\btwerk\w*\b",
-        r"\benvoy\w*\s+en\s+l'air\b",
-        r"\bse\s'envoy\w*\s+en\s+l'air\b",
-        r"film\s+pour\s+adultes\b",
-        r"porn\b",
-        r"position\s+pr\w+\b",
-        r"sex\w*\b",
-        r"lit\b",
+        r"\b(amour|amoureux|amoureuse|aime|aimer|aim\w*)\b",
+        r"\b(couple|couples|relation|relations|relationnel\w*|partenaire\w*|fideli\w*)\b",
+        r"\b(sentiment\w*|coeur|jalou\w*|confiance|secret\w*|mensong\w*|regret\w*|honte\w*|guilty)\b",
+        r"\b(crush\w*|beguin\w*|date\w*|rendez[- ]vous|rateau|ex\b|exs\b|prof\b|coll[eè]gue\b|orientation\s+sexuelle)\b",
+        r"\b(flirt\w*|seduct\w*|attir\w*|tendre\w*|romant\w*|declarer\s+ta\s+flamme)\b",
+        r"\b(bais\w*|embrass\w*|kiss\w*|lech\w*|suce\w*|caresses?\w*)\b",
+        r"\b(sexe|sexuel\w*|sexual\w*|sexting|orgas\w*|fantasm\w*|kink\w*|turn[- ]on|body\s+count)\b",
+        r"\b(couch\w*|coucher\w*|faire\s+l'amour|plan\s+cul|au\s+lit|position\w*|threesome)\b",
+        r"\b(toy\w*|contenu\s+adulte|film\s*x|strip[- ]?tease|twerk\w*|envoy\w*\s+en\s+l'air|porn\w*)\b",
+        r"\b(plaisir|hot|coquin\w*|sensuel\w*|provocateur\w*|audacieux\w*|charme\w*)\b",
+        r"\b(mot\s+doux|suspense\s+romant\w*|regard\s+de\s+seduct\w*|regard\s+qui\s+dit\s+tout)\b",
+        r"\b(plage\s+de\s+nuit|tendre\s+en\s+priv\w*|tendre\s+en\s+public|compliment\s+ose\w*|compliment\s+hot)\b",
+        r"\b(proxim\w*|tenu\w*|tatouag\w*|sous[- ]vetement\w*|taille\s+grosse)\b",
     )
 
     return any(re.search(pattern, text) for pattern in intense_patterns)
