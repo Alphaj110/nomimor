@@ -70,7 +70,7 @@ def normalize_text_for_regex(text: str) -> str:
 
 def score_card_intensity(category: str, card_text: str) -> int:
     """Score a card's intensity from 1-10 based on textual criteria.
-    1-4: Étincelle (light), 5-10: Flamme (intense)"""
+    1-4.9: Étincelle (light), 5-10: Flamme (intense)"""
     text = normalize_text_for_regex(f"{category} {card_text}")
     score = 1
     
