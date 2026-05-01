@@ -35,7 +35,12 @@ def load_intensity_cache() -> dict:
     cache_file = Path(__file__).with_name("intensity_cache.json")
     if cache_file.exists():
         with cache_file.open("r", encoding="utf-8") as f:
-            return json.load(f)
+            cache = json.load(f)
+        scores = cache.get("scores", {})
+        for category, cards in scores.items():
+            for card_text, score in list(cards.items()):
+                cards[card_text] = float(score)
+        return cache
     return {"scores": {}}
 
 
@@ -68,11 +73,11 @@ def normalize_text_for_regex(text: str) -> str:
     return "".join(char for char in normalized if not unicodedata.combining(char)).lower()
 
 
-def score_card_intensity(category: str, card_text: str) -> int:
+def score_card_intensity(category: str, card_text: str) -> float:
     """Score a card's intensity from 1-10 based on textual criteria.
     1-4.9: Étincelle (light), 5-10: Flamme (intense)"""
     text = normalize_text_for_regex(f"{category} {card_text}")
-    score = 1
+    score = 1.0
     
     scoring_criteria = [
         (r"sexe|sexuel|sexting|threesome|orgas|fantasm|kink|porn|film\s*x", 9),
@@ -94,7 +99,7 @@ def score_card_intensity(category: str, card_text: str) -> int:
     if "ou" in text and "?" in text:
         score = max(1, score - 1)
     
-    return min(10, max(1, score))
+    return float(min(10, max(1, score)))
 
 
 def get_game_mode_content(mode_name: str) -> dict[str, list[str]]:
@@ -810,14 +815,14 @@ def render_debat_mode() -> None:
 # Game mode
 # -----------------------------
 
-def get_card_intensity_score(category: str, card_text: str) -> int:
+def get_card_intensity_score(category: str, card_text: str) -> float:
     """Get pre-calculated intensity score from cache, fallback to calculation"""
     if category in INTENSITY_CACHE.get("scores", {}):
         score = INTENSITY_CACHE["scores"][category].get(card_text)
         if score is not None:
-            return score
+            return float(score)
     # Fallback if not in cache (shouldn't happen if cache is complete)
-    return score_card_intensity(category, card_text)
+    return float(score_card_intensity(category, card_text))
 
 
 def roll_game_content(intensity: str, category: str) -> None:
