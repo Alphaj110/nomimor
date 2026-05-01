@@ -55,6 +55,35 @@ def normalize_text_for_regex(text: str) -> str:
     return "".join(char for char in normalized if not unicodedata.combining(char)).lower()
 
 
+def score_card_intensity(category: str, card_text: str) -> int:
+    """Score a card's intensity from 1-10 based on textual criteria.
+    1-4: Étincelle (light), 5-10: Flamme (intense)"""
+    text = normalize_text_for_regex(f"{category} {card_text}")
+    score = 1
+    
+    scoring_criteria = [
+        (r"sexe|sexuel|sexting|threesome|orgas|fantasm|kink|porn|film\s*x", 9),
+        (r"couch|faire\s+l'amour|plan\s+cul|coucher|position\w*|toy|dildo|vibr", 8),
+        (r"strip|twerk|nudite|nus|nu\s", 7),
+        (r"baiser|embrass|kiss|lech|suce|caresse|touche|massage|proximite|enlev", 6),
+        (r"seduct|flirt|coquin|sensuel|hot|attir|tendre|romant|charme|amour|crush|date|rendez", 4),
+        (r"fais|pratique", 4),
+        (r"secret|confession|honte|genant|embarrass|regret|mensonge", 3),
+        (r"compliment|sympath|blague|rire|drole|hilarant|rigolo", 1),
+    ]
+    
+    for pattern, points in scoring_criteria:
+        if re.search(pattern, text):
+            score = max(score, points)
+    
+    if len(card_text) > 120:
+        score += 1
+    if "ou" in text and "?" in text:
+        score = max(1, score - 1)
+    
+    return min(10, max(1, score))
+
+
 def get_game_mode_content(mode_name: str) -> dict[str, list[str]]:
     game_modes = load_game_modes()
     if mode_name in game_modes:
@@ -73,25 +102,8 @@ def resolve_game_intensity_choice(choice: str, category: str) -> str:
 
 
 def is_intense_game_card(category: str, card_text: str) -> bool:
-    text = normalize_text_for_regex(f"{category} {card_text}")
-
-    intense_patterns = (
-        r"\b(amour|amoureux|amoureuse|aime|aimer|aim\w*)\b",
-        r"\b(couple|couples|relation|relations|relationnel\w*|partenaire\w*|fideli\w*)\b",
-        r"\b(sentiment\w*|coeur|jalou\w*|confiance|secret\w*|mensong\w*|regret\w*|honte\w*|guilty)\b",
-        r"\b(crush\w*|beguin\w*|date\w*|rendez[- ]vous|rateau|ex\b|exs\b|prof\b|coll[eè]gue\b|orientation\s+sexuelle)\b",
-        r"\b(flirt\w*|seduct\w*|attir\w*|tendre\w*|romant\w*|declarer\s+ta\s+flamme)\b",
-        r"\b(bais\w*|embrass\w*|kiss\w*|lech\w*|suce\w*|caresses?\w*)\b",
-        r"\b(sexe|sexuel\w*|sexual\w*|sexting|orgas\w*|fantasm\w*|kink\w*|turn[- ]on|body\s+count)\b",
-        r"\b(couch\w*|coucher\w*|faire\s+l'amour|plan\s+cul|au\s+lit|position\w*|threesome)\b",
-        r"\b(toy\w*|contenu\s+adulte|film\s*x|strip[- ]?tease|twerk\w*|envoy\w*\s+en\s+l'air|porn\w*)\b",
-        r"\b(plaisir|hot|coquin\w*|sensuel\w*|provocateur\w*|audacieux\w*|charme\w*)\b",
-        r"\b(mot\s+doux|suspense\s+romant\w*|regard\s+de\s+seduct\w*|regard\s+qui\s+dit\s+tout)\b",
-        r"\b(plage\s+de\s+nuit|tendre\s+en\s+priv\w*|tendre\s+en\s+public|compliment\s+ose\w*|compliment\s+hot)\b",
-        r"\b(proxim\w*|tenu\w*|tatouag\w*|sous[- ]vetement\w*|taille\s+grosse)\b",
-    )
-
-    return any(re.search(pattern, text) for pattern in intense_patterns)
+    """A card is intense (Flamme) if its score is 5 or higher."""
+    return score_card_intensity(category, card_text) >= 5
 
 
 def load_theme_presets() -> dict[str, dict[str, str]]:
@@ -681,6 +693,12 @@ def init_session_state() -> None:
         st.session_state.player1_initials = "J"
     if "player2_initials" not in st.session_state:
         st.session_state.player2_initials = "S"
+    if "played_cards" not in st.session_state:
+        st.session_state.played_cards = {"Etincelle": [], "Flamme": []}
+    if "cards_drawn_count" not in st.session_state:
+        st.session_state.cards_drawn_count = 0
+    if "current_intensity_score" not in st.session_state:
+        st.session_state.current_intensity_score = 2
 
 
 # -----------------------------
@@ -774,8 +792,12 @@ def render_debat_mode() -> None:
 # -----------------------------
 
 def roll_game_content(intensity: str, category: str) -> None:
+    """Draw a card, progressing in intensity and avoiding recent repeats."""
     resolved_intensity = resolve_game_intensity_choice(intensity, category)
     game_data = get_game_mode_content(resolved_intensity)
+    
+    st.session_state.cards_drawn_count += 1
+    st.session_state.current_intensity_score = min(10, 2 + (st.session_state.cards_drawn_count // 3))
 
     if category == "Action et Vérités":
         actions = game_data.get("Actions", [])
@@ -797,20 +819,43 @@ def roll_game_content(intensity: str, category: str) -> None:
             return
 
         nature, pool = random.choice(pools)
-        previous = st.session_state.game_pick.get("content") if st.session_state.game_pick.get("category") == nature else None
+        available = [
+            card for card in pool
+            if card not in st.session_state.played_cards.get(resolved_intensity, [])
+            and abs(score_card_intensity(nature, card) - st.session_state.current_intensity_score) <= 2
+        ]
+        
+        if not available:
+            available = [c for c in pool if c not in st.session_state.played_cards.get(resolved_intensity, [])]
+        if not available:
+            available = pool
+            
+        selected = random.choice(available)
         st.session_state.game_pick = {
             "category": nature,
-            "content": get_random_item(pool, previous),
+            "content": selected,
             "answer": None,
         }
+        st.session_state.played_cards[resolved_intensity].append(selected)
         st.session_state.game_reveal_answer = False
         return
 
     if category not in game_data:
         return
 
-    previous_content = st.session_state.game_pick.get("content")
-    raw_content = get_random_item(game_data[category], previous_content)
+    pool = game_data[category]
+    available = [
+        card for card in pool
+        if card not in st.session_state.played_cards.get(resolved_intensity, [])
+        and abs(score_card_intensity(category, card) - st.session_state.current_intensity_score) <= 2
+    ]
+    
+    if not available:
+        available = [c for c in pool if c not in st.session_state.played_cards.get(resolved_intensity, [])]
+    if not available:
+        available = pool
+    
+    raw_content = random.choice(available)
     visible_content, answer = raw_content, None
     if category == "Devinettes":
         visible_content, answer = split_devinette_card(raw_content)
@@ -820,6 +865,7 @@ def roll_game_content(intensity: str, category: str) -> None:
         "content": visible_content,
         "answer": answer,
     }
+    st.session_state.played_cards[resolved_intensity].append(raw_content)
     st.session_state.game_reveal_answer = False
 
 
