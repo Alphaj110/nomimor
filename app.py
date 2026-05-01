@@ -30,6 +30,19 @@ def load_game_content() -> dict[str, list[str]]:
     return data.get("game_content", {})
 
 
+def load_intensity_cache() -> dict:
+    """Load pre-calculated card intensity scores from cache"""
+    cache_file = Path(__file__).with_name("intensity_cache.json")
+    if cache_file.exists():
+        with cache_file.open("r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"scores": {}}
+
+
+# Cache loaded once at startup
+INTENSITY_CACHE = load_intensity_cache()
+
+
 def load_game_modes() -> dict[str, dict[str, list[str]]]:
     game_content = load_game_content()
     game_modes: dict[str, dict[str, list[str]]] = {"Etincelle": {}, "Flamme": {}}
@@ -102,7 +115,13 @@ def resolve_game_intensity_choice(choice: str, category: str) -> str:
 
 
 def is_intense_game_card(category: str, card_text: str) -> bool:
-    """A card is intense (Flamme) if its score is 5 or higher."""
+    """A card is intense (Flamme) if its score is 5 or higher.
+    Uses pre-calculated scores from intensity_cache.json"""
+    if category in INTENSITY_CACHE.get("scores", {}):
+        score = INTENSITY_CACHE["scores"][category].get(card_text)
+        if score is not None:
+            return score >= 5
+    # Fallback if not in cache
     return score_card_intensity(category, card_text) >= 5
 
 
@@ -791,6 +810,16 @@ def render_debat_mode() -> None:
 # Game mode
 # -----------------------------
 
+def get_card_intensity_score(category: str, card_text: str) -> int:
+    """Get pre-calculated intensity score from cache, fallback to calculation"""
+    if category in INTENSITY_CACHE.get("scores", {}):
+        score = INTENSITY_CACHE["scores"][category].get(card_text)
+        if score is not None:
+            return score
+    # Fallback if not in cache (shouldn't happen if cache is complete)
+    return score_card_intensity(category, card_text)
+
+
 def roll_game_content(intensity: str, category: str) -> None:
     """Draw a card, progressing in intensity and avoiding recent repeats."""
     resolved_intensity = resolve_game_intensity_choice(intensity, category)
@@ -822,7 +851,7 @@ def roll_game_content(intensity: str, category: str) -> None:
         available = [
             card for card in pool
             if card not in st.session_state.played_cards.get(resolved_intensity, [])
-            and abs(score_card_intensity(nature, card) - st.session_state.current_intensity_score) <= 2
+            and abs(get_card_intensity_score(nature, card) - st.session_state.current_intensity_score) <= 2
         ]
         
         if not available:
@@ -847,7 +876,7 @@ def roll_game_content(intensity: str, category: str) -> None:
     available = [
         card for card in pool
         if card not in st.session_state.played_cards.get(resolved_intensity, [])
-        and abs(score_card_intensity(category, card) - st.session_state.current_intensity_score) <= 2
+        and abs(get_card_intensity_score(category, card) - st.session_state.current_intensity_score) <= 2
     ]
     
     if not available:
